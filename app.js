@@ -81,8 +81,8 @@ class FargateService extends cdk.Stack {
     this.springgroot.targetGroup.configureHealthCheck({
       "port": 'traffic-port',
       "path": '/',
-      "intervalSecs": 5,
-      "timeoutSeconds": 4,
+      "interval": cdk.Duration.seconds(5),
+      "timeout": cdk.Duration.seconds(4),
       "healthyThresholdCount": 2,
       "unhealthyThresholdCount": 2,
       "healthyHttpCodes": "200,301,302"

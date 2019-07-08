@@ -66,3 +66,14 @@ http sprin-sprin-????????????.ap-southeast-1.elb.amazonaws.com/api/notes
           }
       ]
 ```
+
+### Cloudwatch Dashboard
+Pretty graph on Spring boot task cpu/memory, req/s, response time and a custom metric..
+
+### Custom metric autoscaling
+Trigger custom metric autoscaling:
+```
+while true; do aws cloudwatch put-metric-data --metric-name CDKTestingCustomMetric --namespace "CDK/Testing" --value $(( ( RANDOM % 10 ) + 180 )); sleep 60; done
+
+```
+Spring boot tasks should autoscale from 2 to 3,4,5...progressively. Watch the task count using Cloudwatch Dashboard. A max of 20 tasks will be launched as long as the custom metric stays above 150.
