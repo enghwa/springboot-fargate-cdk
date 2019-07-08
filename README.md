@@ -1,6 +1,19 @@
+# What is this?
+```
+no more YAML. use your favorite programming language (JS, python and more) to build :
+
+Build out the Fargate infrastructure for your  spring boot application, 
+RDS,
+including logging, 
+Secret env variable in task definition (RDS Password),
+cloudwatch dashboard and 
+custom metric autoscaling with target tracking.
+
+```
 # Prepwork
 
 Use AWS Cloud9.
+
 
 ## Create a DB password for RDS .. replace it with your own password value
 ```
