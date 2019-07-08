@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notetaking-k8s
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: notetaking-k8s
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notetaking-k8s
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 2
+      maxSurge: 2
+  selector:
+    matchLabels:
+      app: notetaking-k8s
+  template:
+    metadata:
+      labels:
+        app: notetaking-k8s
+    spec:
+      containers:
+        - name: notetaking-k8s
+          image: CONTAINER_IMAGE
+          securityContext:
+            privileged: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          env:
+          - name: "springdatasourceusername"
+            value: "dbaadmin"
+          - name: "springdatasourceurl"
+            value: "jdbc:mysql://mysql57-dev:3306/notes_app?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true"
+          - name: "mysqlpassword"
+            valueFrom:
+              secretKeyRef:
+                name: mysql57-dev-password
+                key: dbpassword
+          ports:
+            - containerPort: 8080
+
+# kubectl create secret generic mysql57-dev-password --from-literal=dbpassword='XXXX'
+# need external name for RDS
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: mysql57-dev
+# spec:
+#   type: ExternalName
+#   externalName: XXXXX.XXX.rds.amazonaws.com
