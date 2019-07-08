@@ -17,7 +17,7 @@ Use AWS Cloud9.
 
 ## Create a DB password for RDS .. replace it with your own password value
 ```
-aws ssm put-parameter --name "/mysqlpassword" --value "P@ssW%rd#1" --type "SecureString"
+aws ssm put-parameter --name "/mysqlpassword" --value "PassW0rd~~866" --type "SecureString"
 
 ```
 
