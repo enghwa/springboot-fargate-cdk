@@ -36,6 +36,8 @@ npx cdk@0.36.1 deploy  --require-approval never  "*"
 This is a spring boot CRUD app with RDS (mysql).
 
 ```
+# install httpie: https://httpie.org/doc/1.0.2
+# on Cloud9: sudo pip install --upgrade httpie
 # use httpie to POST to ALB endpoint / api/notes , eg:
 
 http POST sprin-sprin-????????????.ap-southeast-1.elb.amazonaws.com/api/notes title="title 2" content="sample content"
