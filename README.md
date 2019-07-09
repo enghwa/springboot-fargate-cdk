@@ -70,6 +70,13 @@ http sprin-sprin-????????????.ap-southeast-1.elb.amazonaws.com/api/notes
 ### Cloudwatch Dashboard
 Pretty graph on Spring boot task cpu/memory, req/s, response time and a custom metric..
 
+### Cloudwatch log insight sample query - select the ECS task log group (tips: use Cloudformation console to find the task log group name)
+```
+
+fields @timestamp, @message
+|filter @message like /JVM running for/
+| sort @timestamp desc
+```
 ### Custom metric autoscaling
 Trigger custom metric autoscaling:
 ```
