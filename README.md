@@ -24,10 +24,14 @@ aws ssm put-parameter --name "/mysqlpassword" --value "PassW0rd~~866" --type "Se
 
 ## Deploy using aws cdk
 ```bash
-export AWS_REGION=ap-southeast-1  # or any region
 
+cd springboot-fargate-cdk
 npm install
-npx cdk@0.36.1 bootstrap
+
+# do this only one time per region, this will bootstrap S3 bucket for CDK
+npx cdk@0.36.1 bootstrap 
+
+#this will use cdk to deploy base infra, rds, and spring boot app on Fargate
 npx cdk@0.36.1 deploy  --require-approval never  "*"
 
 ```
@@ -86,3 +90,16 @@ while true; do aws cloudwatch put-metric-data --metric-name CDKTestingCustomMetr
 
 ```
 Spring boot tasks should autoscale from 2 to 3,4,5...progressively. Watch the task count using Cloudwatch Dashboard. A max of 20 tasks will be launched as long as the custom metric stays above 150.
+
+To scale it down run this command:
+```
+while true; do aws cloudwatch put-metric-data --metric-name CDKTestingCustomMetric --namespace "CDK/Testing" --value $(( ( RANDOM % 10 )  )); sleep 60; done
+
+```
+
+### Clean up
+
+```
+npx cdk@0.36.1 destroy
+
+```
