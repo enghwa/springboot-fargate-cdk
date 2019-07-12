@@ -29,10 +29,10 @@ cd springboot-fargate-cdk
 npm install
 
 # do this only one time per region, this will bootstrap S3 bucket for CDK
-npx cdk@0.36.1 bootstrap 
+npx cdk@1.0.0 bootstrap 
 
 #this will use cdk to deploy base infra, rds, and spring boot app on Fargate
-npx cdk@0.36.1 deploy  --require-approval never  "*"
+npx cdk@1.0.0 deploy  --require-approval never  "*"
 
 ```
 
@@ -100,6 +100,6 @@ while true; do aws cloudwatch put-metric-data --metric-name CDKTestingCustomMetr
 ### Clean up
 
 ```
-npx cdk@0.36.1 destroy
+npx cdk@1.0.0 destroy
 
 ```
