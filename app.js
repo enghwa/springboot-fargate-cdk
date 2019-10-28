@@ -4,9 +4,7 @@ const ec2 = require('@aws-cdk/aws-ec2');
 const rds = require('@aws-cdk/aws-rds');
 const ecs_patterns = require('@aws-cdk/aws-ecs-patterns');
 const cloudwatch = require('@aws-cdk/aws-cloudwatch');
-const iam = require('@aws-cdk/aws-iam');
-const ssm = require('@aws-cdk/aws-ssm');
-const kms = require('@aws-cdk/aws-kms');
+const secretsmanager = require('@aws-cdk/aws-secretsmanager');
 
 class BaseInfraResources extends cdk.Stack {
   constructor(parent, id, props) {
@@ -14,8 +12,8 @@ class BaseInfraResources extends cdk.Stack {
 
     // Network to run everything in
     this.vpc = new ec2.Vpc(this, 'vpc-springgroot', {
-      maxAZs: 3,
-      natGateways: 1
+      maxAZs: 2,
+      natGateways: 1 //save $$ lar
     });
     // Cluster all the containers will run in
     this.cluster = new ecs.Cluster(this, 'springgroot-cluster', { vpc: this.vpc });
@@ -27,22 +25,22 @@ class MySQLDatabase extends cdk.Stack {
   constructor(parent, id, props) {
     super(parent, id, props);
 
+    this.mySQLPassword = new secretsmanager.Secret(this, 'DBSecret', {
+      secretName: "SpringbootDB-DBPassword",
+      generateSecretString: {
+        excludePunctuation: true
+      }
+    });
+
     const dbsecuritygroup = new ec2.SecurityGroup(this, 'dbsg', {
       vpc: props.vpc,
       description: "database security group"
     })
-
     dbsecuritygroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(3306), "Allow inbound to db")
-
     const subnetGroup = new rds.CfnDBSubnetGroup(this, 'Subnet', {
       subnetIds: props.vpc.privateSubnets.map(privateSubnet => privateSubnet.subnetId),
       dbSubnetGroupDescription: 'Database subnet group',
     });
-
-    let ssmdbpassword = ssm.StringParameter.fromSecureStringParameterAttributes(this, 'ssmDBpassword', {
-      parameterName: '/mysqlpassword',
-      version: 1
-    })
 
     this.rds = new rds.CfnDBInstance(this, "mysql-single-instance", {
       allocatedStorage: '80',
@@ -51,7 +49,7 @@ class MySQLDatabase extends cdk.Stack {
       dbName: 'notes_app',
       engineVersion: '5.7.25',
       masterUsername: 'dbaadmin',
-      masterUserPassword: ssmdbpassword.stringValue,
+      masterUserPassword: this.mySQLPassword.secretValue,
       dbSubnetGroupName: subnetGroup.ref,
       vpcSecurityGroups: [dbsecuritygroup.securityGroupId]
     })
@@ -62,19 +60,22 @@ class FargateService extends cdk.Stack {
   constructor(parent, id, props) {
     super(parent, id, props);
 
-    this.springgroot = new ecs_patterns.LoadBalancedFargateService(this, 'springgrootsvc', {
+    this.springgroot = new ecs_patterns.ApplicationLoadBalancedFargateService(this, 'springgrootsvc', {
       cluster: props.cluster,
-      image: ecs.ContainerImage.fromAsset('./springgroot-jpa'),
-      containerPort: 8080,
       desiredCount: 2,
-      cpu: '512',
-      memoryLimitMiB: '1024',
-      environment: {
-        // AWS_XRAY_CONTEXT_MISSING: 'LOG_ERROR'
-        'springdatasourceurl': `jdbc:mysql://` + props.springgrootDB.attrEndpointAddress + `:3306/notes_app?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true`,
-        'springdatasourceusername': 'dbaadmin'
-      },
-      createLogs: true
+      cpu: 512,
+      memoryLimitMiB: 2048,
+      taskImageOptions: {
+        image: ecs.ContainerImage.fromAsset('./springgroot-jpa'),
+        containerPort: 8080,
+        environment: {
+          'springdatasourceurl': `jdbc:mysql://` + props.springgrootDB.attrEndpointAddress + `:3306/notes_app?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true`,
+          'springdatasourceusername': 'dbaadmin'
+        },
+        secrets: {
+          'mysqlpassword': ecs.Secret.fromSecretsManager(props.mySQLPassword)
+        }
+      }
     })
 
     //customize healthcheck
@@ -88,29 +89,6 @@ class FargateService extends cdk.Stack {
       "healthyHttpCodes": "200,301,302"
     })
 
-    //https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data.html
-    let ssmMasterKey = kms.Key.fromKeyArn(this, 'ssmmasterkey', 'arn:aws:kms:' + this.region + ':' + this.account + ':alias/aws/ssm')
-    ssmMasterKey.grantDecrypt(this.springgroot.service.taskDefinition.executionRole)
-
-    let ssmdbpassword = ssm.StringParameter.fromSecureStringParameterAttributes(this, 'ssmDBpassword', {
-      parameterName: '/mysqlpassword',
-      version: 1
-    })
-    // ssmdbpassword.grantRead(this.springgroot.service.taskDefinition.executionRole)  -> can't use this as it gives "ssm:GetParameter"
-    this.springgroot.service.taskDefinition.executionRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ["ssm:GetParameters"],
-        resources: [ssmdbpassword.parameterArn]
-      })
-    )
-
-    // Work Around Missing AWS CDK Features - https://docs.aws.amazon.com/cdk/latest/guide/cfn_layer.html 
-    // https://github.com/awslabs/aws-cdk/pull/2994 
-    let fgs = this.springgroot.service.taskDefinition.node.findChild('Resource')
-    fgs.addPropertyOverride('ContainerDefinitions.0.Secrets', [{
-      Name: "mysqlpassword",
-      ValueFrom: ssmdbpassword.parameterArn
-    }])
 
     // ## Autoscaling Tasks  - Target Tracking 
     let springgrootServiceAutoScaleTask = this.springgroot.service.autoScaleTaskCount({
@@ -133,7 +111,7 @@ class FargateService extends cdk.Stack {
       policyName: "KeepIt150"
     })
 
-    // ==== Cloudwatch Dashboard
+// ==== Cloudwatch Dashboard
     this.dashboard = new cloudwatch.Dashboard(this, "springgroot2-dashboard");
     this.dashboard.addWidgets(
       new cloudwatch.TextWidget({
@@ -184,10 +162,10 @@ class FargateService extends cdk.Stack {
           color: '#d62728',
           statistic: 'avg',
           period: cdk.Duration.minutes(1),
-          // HorizontalAnnotation: {
-          //   value: 150,
-          //   label: "breach 150"
-          // }
+          HorizontalAnnotation: {
+            value: 150,
+            label: "breach 150"
+          }
         })
         ]
       })
@@ -256,7 +234,8 @@ class App extends cdk.App {
 
     this.springbootApp = new FargateService(this, 'springgroot-fargate-svc', {
       cluster: this.baseResources.cluster,
-      springgrootDB: this.springgrootDB.rds
+      springgrootDB: this.springgrootDB.rds,
+      mySQLPassword: this.springgrootDB.mySQLPassword
     })
   }
 }

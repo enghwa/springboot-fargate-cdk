@@ -1,9 +1,9 @@
 {
   "description": "cdk quick start",
   "devDependencies": {
-    "aws-cdk": "1.0.0",
-    "@aws-cdk/core": "1.0.0",
-    "@aws-cdk/aws-ecs": "1.0.0"
+    "aws-cdk": "^1.14.0",
+    "@aws-cdk/core": "^1.14.0",
+    "@aws-cdk/aws-ecs": "^1.14.0"
   },
   "scripts": {
     "diff": "cdk diff",
@@ -12,12 +12,14 @@
     "destroy": "cdk destroy"
   },
   "dependencies": {
-    "@aws-cdk/aws-elasticloadbalancingv2": "^1.0.0",
-    "@aws-cdk/aws-ecs-patterns": "^1.0.0",
-    "@aws-cdk/aws-iam": "^1.0.0",
-    "@aws-cdk/aws-logs": "^1.0.0",
-    "@aws-cdk/aws-rds": "^1.0.0",
-    "@aws-cdk/aws-ssm": "^1.0.0",
-    "@aws-cdk/aws-kms": "^1.0.0"
+    "@aws-cdk/aws-ecs-patterns": "^1.14.0",
+    "@aws-cdk/aws-elasticloadbalancingv2": "^1.14.0",
+    "@aws-cdk/aws-iam": "^1.14.0",
+    "@aws-cdk/aws-kms": "^1.14.0",
+    "@aws-cdk/aws-logs": "^1.14.0",
+    "@aws-cdk/aws-rds": "^1.14.0",
+    "@aws-cdk/aws-ssm": "^1.14.0",
+    "cdk-watchful": "^0.3.0",
+    "install": "^0.13.0"
   }
 }
