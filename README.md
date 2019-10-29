@@ -12,15 +12,15 @@ custom metric autoscaling with target tracking.
 ```
 # Prepwork
 
-Use AWS Cloud9.
+Use AWS Cloud9 or vscode
 
-
+<!-- 
 ## Create a DB password for RDS .. replace it with your own password value
 ```
 aws ssm put-parameter --name "/mysqlpassword" --value "PassW0rd~~866" --type "SecureString"
 
 ```
-
+-->
 
 ## Deploy using aws cdk
 ```bash
@@ -29,10 +29,10 @@ cd springboot-fargate-cdk
 npm install
 
 # do this only one time per region, this will bootstrap S3 bucket for CDK
-npx cdk@1.0.0 bootstrap 
+npx cdk@1.14.0 bootstrap 
 
 #this will use cdk to deploy base infra, rds, and spring boot app on Fargate
-npx cdk@1.0.0 deploy  --require-approval never  "*"
+npx cdk@1.14.0 deploy  --require-approval never  "*"
 
 ```
 
@@ -100,6 +100,6 @@ while true; do aws cloudwatch put-metric-data --metric-name CDKTestingCustomMetr
 ### Clean up
 
 ```
-npx cdk@1.0.0 destroy
+npx cdk@1.14.0 destroy
 
 ```
