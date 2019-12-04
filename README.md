@@ -12,7 +12,7 @@ custom metric autoscaling with target tracking.
 ```
 # Prepwork
 
-Use AWS Cloud9 or vscode
+Use AWS Cloud9 or vscode:
 
 <!-- 
 ## Create a DB password for RDS .. replace it with your own password value
