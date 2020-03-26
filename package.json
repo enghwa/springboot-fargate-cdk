@@ -1,25 +1,32 @@
 {
-  "description": "cdk quick start",
-  "devDependencies": {
-    "aws-cdk": "^1.14.0",
-    "@aws-cdk/core": "^1.14.0",
-    "@aws-cdk/aws-ecs": "^1.14.0"
+  "name": "springboot-fargate-cdk",
+  "version": "0.1.0",
+  "bin": {
+    "springboot-fargate-cdk": "bin/springboot-fargate-cdk.js"
   },
   "scripts": {
-    "diff": "cdk diff",
-    "deploy": "cdk deploy --require-approval never",
-    "synth": "cdk synth --output synth",
-    "destroy": "cdk destroy"
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "1.30.0",
+    "@types/jest": "^24.0.22",
+    "@types/node": "10.17.5",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "aws-cdk": "1.30.0",
+    "ts-node": "^8.1.0",
+    "typescript": "~3.7.2"
   },
   "dependencies": {
-    "@aws-cdk/aws-ecs-patterns": "^1.14.0",
-    "@aws-cdk/aws-elasticloadbalancingv2": "^1.14.0",
-    "@aws-cdk/aws-iam": "^1.14.0",
-    "@aws-cdk/aws-kms": "^1.14.0",
-    "@aws-cdk/aws-logs": "^1.14.0",
-    "@aws-cdk/aws-rds": "^1.14.0",
-    "@aws-cdk/aws-ssm": "^1.14.0",
-    "cdk-watchful": "^0.3.0",
-    "install": "^0.13.0"
+    "@aws-cdk/aws-ec2": "^1.30.0",
+    "@aws-cdk/aws-ecs": "^1.30.0",
+    "@aws-cdk/aws-ecs-patterns": "^1.30.0",
+    "@aws-cdk/aws-rds": "^1.30.0",
+    "@aws-cdk/aws-secretsmanager": "^1.30.0",
+    "@aws-cdk/core": "1.30.0",
+    "source-map-support": "^0.5.16"
   }
 }
