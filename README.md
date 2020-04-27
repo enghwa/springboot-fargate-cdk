@@ -1,23 +1,22 @@
-# Welcome to your CDK TypeScript project!
 
-This is a blank project for TypeScript development with CDK.
+This repo is about deploying spring boot app on AWS Fargate using AWS CDK.
+Are u looking for similar content on ASP.NET Core?
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+Come tune in at Twitch 14 May 2020 https://www.twitch.tv/code4kopi and we will cover .Net Core ! Subscribe and be notify when we stream.
+```
+CI/CD for ASP.NET Core 3 apps on Kubernetes on Twitch 14/May 2020
+In this session, we will learn how to provision a Amazon EKS cluster using AWS Cloud Development Kit (CDK), setup CI/CD pipeline and deploy a ASP.NET Core application to Kubernetes.We will also learn how to setup Operation dashboard and perform troubleshooting.
+```
 
-## Useful commands
-
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
-
+## Get Started
 
 ##
 
 ```bash
+npm i
 npm install @aws-cdk/aws-ecs @aws-cdk/aws-ec2 @aws-cdk/aws-ecs-patterns @aws-cdk/aws-rds @aws-cdk/aws-secretsmanager
+npx cdk@1.30.0 synth
+npx cdk@1.30.0 deploy 
 
 ```
 
