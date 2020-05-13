@@ -15,8 +15,15 @@ We will also learn how to setup Operation dashboard and perform troubleshooting.
 ##
 
 ```bash
+
+#enable Cloudwatch Containers Insight
+aws ecs put-account-setting-default --name containerInsights --value enabled --region <your region>
+
+cd springboot-fargate-cdk
 npm i
-npm install @aws-cdk/aws-ecs @aws-cdk/aws-ec2 @aws-cdk/aws-ecs-patterns @aws-cdk/aws-rds @aws-cdk/aws-secretsmanager
+
+# npm install @aws-cdk/aws-ecs @aws-cdk/aws-ec2 @aws-cdk/aws-ecs-patterns @aws-cdk/aws-rds @aws-cdk/aws-secretsmanager
+npm run build
 npx cdk@1.30.0 synth
 npx cdk@1.30.0 deploy 
 
