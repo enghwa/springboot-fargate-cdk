@@ -1,13 +1,8 @@
 
 This repo is about deploying spring boot app on AWS Fargate using AWS CDK.
-Are u looking for similar content on ASP.NET Core?
+You can watch the live demo/coding here
+https://www.twitch.tv/videos/620627774
 
-Come tune in at Twitch 14 May 2020 https://www.twitch.tv/code4kopi and we will cover .Net Core ! Subscribe and be notify when we stream.
-```
-CI/CD for ASP.NET Core 3 apps on Kubernetes on Twitch 14/May 2020 3pm GMT+8
-In this session, we will learn how to provision a Amazon EKS cluster using AWS Cloud Development Kit (CDK), 
-setup CI/CD pipeline and deploy a ASP.NET Core application to Kubernetes.
-We will also learn how to setup Operation dashboard and perform troubleshooting.
 ```
 
 ## Get Started
