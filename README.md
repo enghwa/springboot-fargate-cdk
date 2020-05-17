@@ -3,7 +3,9 @@ This repo is about deploying spring boot app on AWS Fargate using AWS CDK.
 You can watch the live demo/coding here
 https://www.twitch.tv/videos/620627774
 
-[Watch it on Twitch](https://player.twitch.tv/?autoplay=false&video=v620627774)
+[![Twitch Video](https://raw.githubusercontent.com/enghwa/springboot-fargate-cdk/master/DevAx%20Connect%20-%20AWS%20Fargate%20Deploying%20Java%20Springboot%20Apps%20on%20Serverless%20Containers2.png)](https://player.twitch.tv/?autoplay=false&video=v620627774)
+
+
 ```
 
 ## Get Started
