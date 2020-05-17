@@ -3,6 +3,7 @@ This repo is about deploying spring boot app on AWS Fargate using AWS CDK.
 You can watch the live demo/coding here
 https://www.twitch.tv/videos/620627774
 
+[Watch it on Twitch](https://player.twitch.tv/?autoplay=false&video=v620627774)
 ```
 
 ## Get Started
