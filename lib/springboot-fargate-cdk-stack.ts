@@ -1,13 +1,17 @@
-import * as cdk from '@aws-cdk/core';
-import ec2 = require('@aws-cdk/aws-ec2');
-import ecs = require('@aws-cdk/aws-ecs');
-import rds = require('@aws-cdk/aws-rds');
-import secretsmanager = require('@aws-cdk/aws-secretsmanager');
-import ecs_patterns = require('@aws-cdk/aws-ecs-patterns');
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+
+import * as ec2 from "aws-cdk-lib/aws-ec2";
+import * as ecs from "aws-cdk-lib/aws-ecs";
+import * as ecs_patterns from "aws-cdk-lib/aws-ecs-patterns";
+import * as rds from 'aws-cdk-lib/aws-rds';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 
 export class SpringbootFargateCdkStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+
     super(scope, id, props);
+
     // Our VPC
     const vpc = new ec2.Vpc(this, "springboot-vpc", {
       maxAzs: 2,
@@ -37,11 +41,11 @@ export class SpringbootFargateCdkStack extends cdk.Stack {
       databaseName: 'notes_app',
       dbClusterIdentifier: "notes-app-dbcluster",
       masterUsername: 'dbaadmin',
-      masterUserPassword: mySQLPassword.secretValue.toString(),
+      masterUserPassword: mySQLPassword.secretValue.unsafeUnwrap(),
 
       dbSubnetGroupName: new rds.CfnDBSubnetGroup(this, "db-subnet-group", {
         dbSubnetGroupDescription: `notes_app_db_cluster subnet group`,
-        subnetIds: vpc.selectSubnets({ subnetType: ec2.SubnetType.PRIVATE }).subnetIds
+        subnetIds: vpc.selectSubnets({ subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }).subnetIds
       }).ref,
       vpcSecurityGroupIds: [dbSecurityGroup.securityGroupId],
 
