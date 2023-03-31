@@ -35,9 +35,9 @@ export class SpringbootFargateCdkStack extends cdk.Stack {
     })
     dbSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(3306));
     const auroraServerlessRds = new rds.CfnDBCluster(this, "aurora-serverless", {
-      engine: "aurora",
+      engine: "aurora-mysql",
       engineMode: "serverless",
-      engineVersion: "5.6",
+      engineVersion: "5.7.mysql_aurora.2.08.2",
       databaseName: 'notes_app',
       dbClusterIdentifier: "notes-app-dbcluster",
       masterUsername: 'dbaadmin',
